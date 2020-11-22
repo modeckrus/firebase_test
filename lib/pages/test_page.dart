@@ -2,12 +2,15 @@ import 'package:firebase_test/service/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+
 class TestPage extends StatefulWidget {
   @override
   _TestPageState createState() => _TestPageState();
 }
 
 class _TestPageState extends State<TestPage> {
+  String status = '';
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,12 +46,15 @@ class _TestPageState extends State<TestPage> {
               RaisedButton(
                 child: Text('get'),
                 onPressed: () async {
-                  final string = await FirebaseService.getDocument('huis/huis');
-                  print('Done: $string');
+                  final string = await FirebaseService.getDocument('test/test');
+                  await Clipboard.setData(ClipboardData(text: string));
+                  setState(() {
+                    status = string;
+                  });
                 },
               ),
               Divider(),
-              Text(FirebaseService.status ?? 'Status: no'),
+              SelectableText(status),
             ],
           ),
         ),
