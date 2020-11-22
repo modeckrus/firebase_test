@@ -1,3 +1,4 @@
+import 'package:firebase_test/service/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 class InitialPage extends StatefulWidget {
@@ -16,23 +17,29 @@ class _InitialPageState extends State<InitialPage> {
         ),
         body: Column(
           children: [
-            RaisedButton(
-              child: Text('Register'),
-              onPressed: () {
+            ListTile(
+              trailing: Icon(Icons.navigate_next),
+              leading: Icon(Icons.supervised_user_circle),
+              title: Text('Register'),
+              onTap: () {
                 Navigator.pushNamed(context, '/register');
               },
             ),
             Divider(),
-            RaisedButton(
-              child: Text('Login'),
-              onPressed: () {
+            ListTile(
+              title: Text('Login'),
+              leading: Icon(Icons.account_circle),
+              trailing: Icon(Icons.navigate_next),
+              onTap: () {
                 Navigator.pushNamed(context, '/login');
               },
             ),
             Divider(),
-            RaisedButton(
-              child: Text('Test'),
-              onPressed: () {
+            ListTile(
+              trailing: Icon(Icons.navigate_next),
+              leading: Icon(Icons.adb),
+              title: Text('Test'),
+              onTap: () {
                 Navigator.pushNamed(context, '/test');
               },
             ),

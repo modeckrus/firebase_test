@@ -1,16 +1,11 @@
 import 'package:firebase_test/route_generator.dart';
+import 'package:firebase_test/service/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  FirebaseService.loadFromFile();
   runApp(MyApp());
 }
-
-// const API_KEY := "[ENTER API KEY]"
-// const PROJECT_ID := "[ENTER PROJECT ID]"
-
-// const REGISTER_URL := "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=%s" % API_KEY
-// const LOGIN_URL := "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=%s" % API_KEY
-// const FIRESTORE_URL := "https://firestore.googleapis.com/v1/projects/%s/databases/(default)/documents/" % PROJECT_ID
 
 class MyApp extends StatelessWidget {
   @override
@@ -18,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
       onGenerateRoute: (settings) {
         return RouteGenerator.generateRoute(settings);
       },

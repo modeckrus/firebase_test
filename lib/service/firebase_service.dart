@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
 class FirebaseService {
+  // api and urls
   static const String projectId = 'testplatform-modeck';
   static const String apiKey = 'AIzaSyACE4LOeZ7e6hg2Q3dPaxDhz4y6n97gjmo';
   static final register_url =
@@ -12,19 +14,48 @@ class FirebaseService {
       'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=$apiKey';
   static final firestore_url =
       'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/';
-  // static Map<String, dynamic> user_info;
+  // static final mask_url = '';
+  //  User
   static String currentToken;
   static bool isAuth = false;
-  static RegistredUser registredUser;
+  static AuthUser user;
+  //
+  static String status;
+  //  Private
+  static File _file = File('./settings.json');
+  //  Stream
   static Stream<String> get notification =>
       _notificationController.stream.asBroadcastStream();
   static final StreamController<String> _notificationController =
       StreamController<String>();
+  //  private functions
   static String _getTokenIdFromResult(http.Response result) {
     print(result.body);
-    registredUser = RegistredUser.fromJson(jsonDecode(result.body));
-    return registredUser.idToken;
+    user = AuthUser.fromJson(jsonDecode(result.body));
+    return user.idToken;
   }
+
+  static Map<String, String> _getRequestHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${user.idToken}',
+    };
+  }
+
+  static Future<void> saveToFile() async {
+    final json = {'isAuth': isAuth, 'user': user, 'status': 'zalupa'};
+    final content = jsonEncode(json);
+    _file = await _file.writeAsString(content);
+  }
+
+  static Future<void> loadFromFile() async {
+    final content = await _file.readAsString();
+    final json = jsonDecode(content);
+    isAuth = json['isAuth'];
+    user = AuthUser.fromJson(json['user']);
+    status = json['zalupa'];
+  }
+  //Public fields
 
   static Future<void> register(String email, String password) async {
     final body = {
@@ -36,6 +67,7 @@ class FirebaseService {
     if (result.statusCode == 200) {
       currentToken = _getTokenIdFromResult(result);
       _notificationController.add('Register Success');
+      saveToFile();
     } else {
       print('Error: ${result.body}');
       _notificationController.add('Register Failed: ${result.body}');
@@ -53,38 +85,14 @@ class FirebaseService {
     if (result.statusCode == 200) {
       currentToken = _getTokenIdFromResult(result);
       _notificationController.add('Login Success');
+      saveToFile();
     } else {
       print('Error: ${result.body}');
       _notificationController.add('Login Failed: ${result.body}');
     }
   }
-//   func save_document(path: String, fields: Dictionary, http: HTTPRequest) -> void:
-// 	var document := { "fields": fields }
-// 	var body := to_json(document)
-// 	var url := FIRESTORE_URL + path
-// 	http.request(url, _get_request_headers(), false, HTTPClient.METHOD_POST, body)
 
-// func get_document(path: String, http: HTTPRequest) -> void:
-// 	var url := FIRESTORE_URL + path
-// 	http.request(url, _get_request_headers(), false, HTTPClient.METHOD_GET)
-
-// func update_document(path: String, fields: Dictionary, http: HTTPRequest) -> void:
-// 	var document := { "fields": fields }
-// 	var body := to_json(document)
-// 	var url := FIRESTORE_URL + path
-// 	http.request(url, _get_request_headers(), false, HTTPClient.METHOD_PATCH, body)
-
-// func delete_document(path: String, http: HTTPRequest) -> void:
-// 	var url := FIRESTORE_URL + path
-// 	http.request(url, _get_request_headers(), false, HTTPClient.METHOD_DELETE)
-  Map<String, String> _getRequestHeaders() {
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${registredUser.idToken}"',
-    };
-  }
-
-  Future<String> getDocument(String path) async {
+  static Future<String> getDocument(String path) async {
     final url = firestore_url + path;
     final response = await http.get(url, headers: _getRequestHeaders());
     if (response.statusCode == 200) {
@@ -95,7 +103,7 @@ class FirebaseService {
     }
   }
 
-  saveDocument(String path, Map<String, dynamic> fields) async {
+  static saveDocument(String path, Map<String, dynamic> fields) async {
     final document = jsonEncode({
       'fields': fields,
     });
@@ -103,12 +111,12 @@ class FirebaseService {
     http.post(url, headers: _getRequestHeaders(), body: document);
   }
 
-  updateDocument(String path, Map<String, dynamic> fields) {}
+  static updateDocument(String path, Map<String, dynamic> fields) {}
 
-  deleteDocument(String path) {}
+  static deleteDocument(String path) {}
 }
 
-class RegistredUser {
+class AuthUser {
   String kind;
   String idToken;
   String email;
@@ -116,7 +124,7 @@ class RegistredUser {
   String expiresIn;
   String localId;
 
-  RegistredUser(
+  AuthUser(
       {this.kind,
       this.idToken,
       this.email,
@@ -124,7 +132,7 @@ class RegistredUser {
       this.expiresIn,
       this.localId});
 
-  RegistredUser.fromJson(Map<String, dynamic> json) {
+  AuthUser.fromJson(Map<String, dynamic> json) {
     kind = json['kind'];
     idToken = json['idToken'];
     email = json['email'];

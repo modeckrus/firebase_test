@@ -1,3 +1,4 @@
+import 'package:firebase_test/service/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -36,7 +37,18 @@ class _TestPageState extends State<TestPage> {
                   print('done');
                   print(file.absolute.path);
                 },
-              )
+              ),
+              Divider(),
+              Text('Get document'),
+              RaisedButton(
+                child: Text('get'),
+                onPressed: () async {
+                  final string = await FirebaseService.getDocument('huis/huis');
+                  print('Done: $string');
+                },
+              ),
+              Divider(),
+              Text(FirebaseService.status ?? 'Status: no'),
             ],
           ),
         ),

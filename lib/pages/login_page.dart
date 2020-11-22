@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:firebase_test/firebase_service.dart';
+import 'package:firebase_test/service/firebase_service.dart';
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController;
   TextEditingController _passwordController;
   @override
@@ -31,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
       top: false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Register'),
+          title: Text('Login'),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -50,9 +50,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(labelText: 'Password'),
               ),
               RaisedButton(
-                child: Text('Register'),
+                child: Text('Login'),
                 onPressed: () {
-                  FirebaseService.register(
+                  FirebaseService.login(
                       _emailController.text, _passwordController.text);
                 },
               ),
