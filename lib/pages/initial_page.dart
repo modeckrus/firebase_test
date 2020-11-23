@@ -1,4 +1,3 @@
-import 'package:firebase_test/service/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 class InitialPage extends StatefulWidget {

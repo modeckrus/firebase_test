@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:firebase_test/service/firebase_service.dart';
+import 'package:firebase_test/service/firestore_to_json_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -54,6 +57,17 @@ class _TestPageState extends State<TestPage> {
                 },
               ),
               Divider(),
+              RaisedButton(
+                child: Text('Firestore to json'),
+                onPressed: () async {
+                  final string = await FirebaseService.getDocument('huis/huis');
+                  final result =
+                      FirestoreToJson.firestoreParser(jsonDecode(string));
+                  setState(() {
+                    status = result ?? '';
+                  });
+                },
+              ),
               SelectableText(status),
             ],
           ),

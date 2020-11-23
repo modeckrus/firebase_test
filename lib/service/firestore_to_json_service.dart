@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class FirestoreToJson {
   final fquerry = '''
   {
@@ -47,7 +49,7 @@ class FirestoreToJson {
     },
     "geo": {
       "geoPointValue": {
-        "latitude": 1,
+        "latitude",
         "longitude": 2
       }
     },
@@ -64,19 +66,38 @@ class FirestoreToJson {
 
 
   ''';
-  static getFireStoreProp(dynamic value) {
-    const prop = {
-      'arrayValue': 1,
-      'bytesValue': 1,
-      'booleanValue': 1,
-      'doubleValue': 1,
-      'geoPointValue': 1,
-      'integerValue': 1,
-      'mapValue': 1,
-      'nullValue': 1,
-      'referenceValue': 1,
-      'stringValue': 1,
-      'timestampValue': 1
-    };
+  static String getFireStoreProp(Map<String, dynamic> value) {
+    const props = [
+      'arrayValue',
+      'bytesValue',
+      'booleanValue',
+      'doubleValue',
+      'geoPointValue',
+      'integerValue',
+      'mapValue',
+      'nullValue',
+      'referenceValue',
+      'stringValue',
+      'timestampValue',
+    ];
+    return value.keys.firstWhere((element) => props.contains(element));
+  }
+
+  static iterateMap(Map<String, dynamic> json) {}
+
+  static firestoreParser(Map<String, dynamic> value) {
+    iterateMap(value);
+    // final prop = getFireStoreProp(value['value']);
+    // var result;
+    // if (prop == 'doubleValue') {
+    //   result = double.parse(value[prop]);
+    // }
+    // if (prop == 'integerValue') {
+    //   result = int.parse(value[prop]);
+    // }
+    // if (prop == 'arrayValue') {
+    //   result = (value[prop] && value[prop].values);
+    // }
+    // return result;
   }
 }
