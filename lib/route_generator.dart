@@ -5,17 +5,29 @@ import 'package:firebase_test/pages/register_page.dart';
 import 'package:firebase_test/pages/scrollable_page.dart';
 import 'package:firebase_test/pages/test_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'pages/notification_initial_page.dart';
 import 'service/route_transitions.dart';
 
 class RouteGenerator {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
+  static Route<dynamic> generateRoute(RouteSettings settings,
+      NotificationAppLaunchDetails notificationAppLaunchDetails) {
     switch (settings.name) {
       case '/':
-        return PageRouteTransition(
-            builder: (_) => InitialPage(),
-            animationType: AnimationType.slide_right,
-            curves: Curves.easeInOut);
+        if (notificationAppLaunchDetails.didNotificationLaunchApp) {
+          return PageRouteTransition(
+              builder: (_) => NotificationInitialPage(
+                    notificationAppLaunchDetails: notificationAppLaunchDetails,
+                  ),
+              animationType: AnimationType.slide_right,
+              curves: Curves.easeInOut);
+        } else {
+          return PageRouteTransition(
+              builder: (_) => InitialPage(),
+              animationType: AnimationType.slide_right,
+              curves: Curves.easeInOut);
+        }
         break;
       case '/login':
         return PageRouteTransition(

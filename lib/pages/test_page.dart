@@ -1,3 +1,4 @@
+import 'package:firebase_test/service/notification_service.dart';
 import 'package:firedart/firedart.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -58,10 +59,11 @@ class _TestPageState extends State<TestPage> {
               Divider(),
               RaisedButton(
                 onPressed: () async {
-                  final result = await Process.run('ls', ['.']);
-                  setState(() {
-                    status = result.stdout as String;
-                  });
+                  NotificationService.sendNotification(ReceivedNotification(
+                      id: Platform.numberOfProcessors,
+                      title: 'Super title',
+                      body: 'Body yazza',
+                      payload: 'Cool'));
                 },
                 child: Text('Run process'),
               ),

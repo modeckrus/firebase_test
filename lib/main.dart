@@ -1,18 +1,25 @@
 import 'package:firebase_test/pages/error_page.dart';
-import 'package:firebase_test/pages/initial_page.dart';
 import 'package:firebase_test/route_generator.dart';
 import 'package:firebase_test/service/firebase_service.dart';
-import 'package:firebase_test/service/new_firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'pages/loading_page.dart';
+import 'service/notification_service.dart';
 
 void main() async {
   await FirebaseService.init();
-  runApp(MyApp());
+  final not = await NotificationService.init();
+  runApp(MyApp(
+    notification: not,
+  ));
 }
 
 class MyApp extends StatelessWidget {
+  final NotificationAppLaunchDetails notification;
+
+  const MyApp({Key key, @required this.notification}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,47 +27,9 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
       onGenerateRoute: (settings) {
-        return RouteGenerator.generateRoute(settings);
+        return RouteGenerator.generateRoute(settings, notification);
       },
       initialRoute: '/',
-    );
-    return FutureBuilder(
-      future: FirebaseService.init(),
-      builder: (context, snap) {
-        if (snap.hasError) {
-          return MaterialApp(
-            title: 'Flutter Demo',
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            home: ErrorPage(
-              error: snap.error.toString(),
-            ),
-          );
-        }
-        if (!snap.hasData) {
-          return MaterialApp(
-            title: 'Flutter Demo',
-            darkTheme: ThemeData.dark(),
-            themeMode: ThemeMode.dark,
-            home: LoadingPage(),
-          );
-        }
-        return MaterialApp(
-          title: 'Flutter Demo',
-          darkTheme: ThemeData.dark(),
-          themeMode: ThemeMode.dark,
-          onGenerateRoute: (settings) {
-            return RouteGenerator.generateRoute(settings);
-          },
-          initialRoute: '/',
-        );
-        // return MaterialApp(
-        //   title: 'Flutter Demo',
-        //   darkTheme: ThemeData.dark(),
-        //   themeMode: ThemeMode.dark,
-        //   home: InitialPage(),
-        // );
-      },
     );
   }
 }
