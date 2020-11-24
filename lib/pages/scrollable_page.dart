@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ScrollablePage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _ScrollablePageState extends State<ScrollablePage> {
         appBar: AppBar(
           title: Text('Scrollable area'),
         ),
-        body: Scrollbar(
+        body: CupertinoScrollbar(
           controller: _controller,
           child: ListView.builder(
             controller: _controller,

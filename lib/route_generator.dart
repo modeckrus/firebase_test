@@ -1,18 +1,33 @@
+import 'dart:io';
+
 import 'package:firebase_test/pages/error_page.dart';
 import 'package:firebase_test/pages/initial_page.dart';
 import 'package:firebase_test/pages/login_page.dart';
 import 'package:firebase_test/pages/register_page.dart';
 import 'package:firebase_test/pages/scrollable_page.dart';
 import 'package:firebase_test/pages/test_page.dart';
+import 'package:firedart/firedart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'pages/notification_initial_page.dart';
+import 'service/notification_service.dart';
 import 'service/route_transitions.dart';
 
 class RouteGenerator {
+  static bool isMounted = false;
   static Route<dynamic> generateRoute(RouteSettings settings,
       NotificationAppLaunchDetails notificationAppLaunchDetails) {
+    if (!isMounted) {
+      Firestore.instance.collection('notify').stream.listen((document) {
+        NotificationService.sendNotification(ReceivedNotification(
+            id: Platform.numberOfProcessors,
+            title: document.last.map['title'] ?? 'title',
+            body: document.last.map['title'] ?? 'body',
+            payload: document.last.map['title'] ?? 'Payload'));
+      });
+      isMounted = true;
+    }
     switch (settings.name) {
       case '/':
         if (notificationAppLaunchDetails.didNotificationLaunchApp) {

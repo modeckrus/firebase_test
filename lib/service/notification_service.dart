@@ -25,6 +25,8 @@ class NotificationService {
   static final BehaviorSubject<String> selectNotificationSubject =
       BehaviorSubject<String>();
 
+  static bool grantedPermissons = false;
+
   static const MethodChannel platform =
       MethodChannel('dexterx.dev/flutter_local_notifications_example');
   static Future<void> _configureLocalTimeZone() async {
@@ -33,9 +35,13 @@ class NotificationService {
     tz.setLocalLocation(tz.getLocation(timeZoneName));
   }
 
-  static sendNotification(ReceivedNotification notification) async {
+  static Future<void> sendNotification(
+      ReceivedNotification notification) async {
     if (Platform.isLinux) {
-      Process.run('notify-send', ['-a', notification.title, notification.body]);
+      final process = Process.run('notify-send',
+          ['-a', '"${notification.title}"', '"${notification.body}"']);
+      final proccesResult = await process;
+      print('Notification: ${proccesResult.stdout}');
     } else {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails('your channel id', 'your channel name',
@@ -93,6 +99,7 @@ class NotificationService {
       }
       selectNotificationSubject.add(payload);
     });
+
     return notificationAppLaunchDetails;
   }
 }
