@@ -42,6 +42,15 @@ class _InitialPageState extends State<InitialPage> {
                 Navigator.pushNamed(context, '/test');
               },
             ),
+            Divider(),
+            ListTile(
+              trailing: Icon(Icons.navigate_next),
+              leading: Icon(Icons.cached),
+              title: Text('Scrollable'),
+              onTap: () {
+                Navigator.pushNamed(context, '/scrollable');
+              },
+            ),
           ],
         ),
       ),

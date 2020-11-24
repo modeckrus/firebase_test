@@ -2,6 +2,7 @@ import 'package:firebase_test/pages/error_page.dart';
 import 'package:firebase_test/pages/initial_page.dart';
 import 'package:firebase_test/pages/login_page.dart';
 import 'package:firebase_test/pages/register_page.dart';
+import 'package:firebase_test/pages/scrollable_page.dart';
 import 'package:firebase_test/pages/test_page.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,12 @@ class RouteGenerator {
       case '/test':
         return PageRouteTransition(
             builder: (_) => TestPage(),
+            animationType: AnimationType.slide_right,
+            curves: Curves.easeInOut);
+        break;
+      case '/scrollable':
+        return PageRouteTransition(
+            builder: (_) => ScrollablePage(),
             animationType: AnimationType.slide_right,
             curves: Curves.easeInOut);
         break;

@@ -7,16 +7,25 @@ import 'package:flutter/material.dart';
 
 import 'pages/loading_page.dart';
 
-void main() {
-  FirebaseService.loadFromFile();
+void main() async {
+  await FirebaseService.init();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      onGenerateRoute: (settings) {
+        return RouteGenerator.generateRoute(settings);
+      },
+      initialRoute: '/',
+    );
     return FutureBuilder(
-      future: NewFirebaseService.init(),
+      future: FirebaseService.init(),
       builder: (context, snap) {
         if (snap.hasError) {
           return MaterialApp(

@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import 'package:firebase_test/service/firebase_service.dart';
-import 'package:firebase_test/service/firestore_to_json_service.dart';
+import 'package:firedart/firedart.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -49,24 +46,24 @@ class _TestPageState extends State<TestPage> {
               RaisedButton(
                 child: Text('get'),
                 onPressed: () async {
-                  final string = await FirebaseService.getDocument('test/test');
-                  await Clipboard.setData(ClipboardData(text: string));
+                  final document = await Firestore.instance
+                      .collection('test')
+                      .document('test')
+                      .get();
                   setState(() {
-                    status = string;
+                    status = document.map.toString();
                   });
                 },
               ),
               Divider(),
               RaisedButton(
-                child: Text('Firestore to json'),
                 onPressed: () async {
-                  final string = await FirebaseService.getDocument('huis/huis');
-                  final result =
-                      FirestoreToJson.firestoreParser(jsonDecode(string));
+                  final result = await Process.run('ls', ['.']);
                   setState(() {
-                    status = result ?? '';
+                    status = result.stdout as String;
                   });
                 },
+                child: Text('Run process'),
               ),
               SelectableText(status),
             ],
